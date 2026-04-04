@@ -1,12 +1,27 @@
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
 import { updateStorage } from "../api/fetchWords";
+import AlertModal from "../components/AlertModal";
 import Button from "../components/button";
 
 export default function Index() {
+  const [showAlert, setShowAlert] = useState(false);
+
   const handlePress = (mode: string) => {
     console.log(`Został naciśnięty przycisk: ${mode}`);
-    // Gdybyś chciał od razu przekierować do nowego okna, możesz to odkomentować:
-    // router.push(`/practice?mode=${mode}`);
+    router.push({
+      pathname: "/TypingScreen",
+      params: { mode }
+    });
+  };
+
+  const handaleUpdate = async () => {
+    const success = await updateStorage();
+
+    if (success) {
+      setShowAlert(true);
+    }
   };
 
   return (
@@ -19,7 +34,9 @@ export default function Index() {
       <View style={styles.buttonContainer}>
         <Button onPress={() => handlePress("pl-en")} label="Polish -> English" />
         <Button onPress={() => handlePress("en-pl")} label="English -> Polish" />
-        <Button onPress={updateStorage} label="Update storage" />
+        <Button onPress={handaleUpdate} label="Update storage" />
+
+        <AlertModal visible={showAlert} message="Words updated successfully!" onClose={() => setShowAlert(false)} />
       </View>
     </View>
   );

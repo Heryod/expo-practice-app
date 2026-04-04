@@ -20,10 +20,11 @@ export const updateStorage = async () => {
   try {
     const newWords = await fetchWords();
     await AsyncStorage.setItem("WORDS_DATA", JSON.stringify(newWords));
-    console.log("Storage updated successfully");
-    alert("Words updated successfully!");
+
+    return true;
   } catch (error) {
     console.error("Error updating storage:", error);
-    alert("An error occurred while updating the data. Please check your connection.");
+
+    return false;
   }
 };
